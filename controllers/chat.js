@@ -82,7 +82,7 @@ export const updateChat = async (req, res) => {
 
 export const deleteChat = async (req, res) => {
 	try {
-		const { email, message, chatId, chatTitle, subject } = req.body;
+		const { email, chatId, chatTitle } = req.body;
 
 		//Finding the document based on email, id, title and deleting it
 		await Chat.findOneAndDelete({ email, chatId, chatTitle })
