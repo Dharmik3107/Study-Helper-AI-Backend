@@ -25,7 +25,7 @@ export const generateTitle = async (inputText) => {
 	});
 
 	// Extracting the response text from the API result
-	const responseData = response.data.choices[0].text.split(`"`)[1];
+	const responseData = response.data.choices[0].text.replace(/^[\?\n\+]+|[\?\n\+]+$/g, "").trim();
 
 	return responseData;
 };

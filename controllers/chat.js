@@ -12,7 +12,7 @@ export const newChat = async (req, res) => {
 		//Generating title in 5 words
 		const titlePrompt = generateTitlePrompt(message);
 		const chatTitle = await generateTitle(titlePrompt);
-
+		console.log(chatTitle);
 		//Generating response based on user input
 		const chatPrompt = generateSubjectPrompt(message, subject);
 		const response = await generateResponse(chatPrompt);
