@@ -79,3 +79,17 @@ export const updateChat = async (req, res) => {
 		sendResponse(res, 500, true, err.message);
 	}
 };
+
+export const deleteChat = async (req, res) => {
+	try {
+		const { email, message, chatId, chatTitle, subject } = req.body;
+
+		//Finding the document based on email, id, title and deleting it
+		await Chat.findOneAndDelete({ email, chatId, chatTitle })
+			.then((result) => sendResponse(res, 200, false, "Chat deleted Successfully"))
+			.catch((error) => sendResponse(res, 500, true, error.message));
+	} catch (err) {
+		console.error(err);
+		sendResponse(res, 500, true, err.message);
+	}
+};
