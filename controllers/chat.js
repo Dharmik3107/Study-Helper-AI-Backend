@@ -74,8 +74,8 @@ export const updateChat = async (req, res) => {
 			const updatedResult = await result.save();
 			sendResponse(res, 200, false, updatedResult);
 		}
-	} catch (error) {
-		console.error(error);
-		sendResponse(res, 500, true, error.message);
+	} catch (err) {
+		console.error(err);
+		sendResponse(res, 500, true, err.message);
 	}
 };
