@@ -20,10 +20,14 @@ const chatHistorySchema = new Schema(
 			required: true,
 			unique: true,
 		},
+		subject: {
+			type: String,
+			required: true,
+		},
 		chatData: [
 			{
 				timestamp: Date,
-				subject: String,
+
 				message: String,
 				response: String,
 			},

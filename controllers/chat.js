@@ -21,7 +21,8 @@ export const newChat = async (req, res) => {
 				email,
 				chatId,
 				chatTitle,
-				chatData: [{ timestamp: Date.now(), subject, message, response: response.replace(/^[\?\n\+]+|[\?\n\+]+$/g, "").trim() }],
+				subject,
+				chatData: [{ timestamp: Date.now(), message, response: response.replace(/^[\?\n\+]+|[\?\n\+]+$/g, "").trim() }],
 			});
 
 			//storing document in database
@@ -70,7 +71,7 @@ export const updateChat = async (req, res) => {
 				sendResponse(res, 404, true, "Chat not found");
 			} else {
 				//Adding new message and response into chatData array
-				result.chatData.push({ timestamp: Date.now(), subject, message, response });
+				result.chatData.push({ timestamp: Date.now(), message, response });
 
 				//Storing the updated document
 				const updatedResult = await result.save();
