@@ -106,10 +106,28 @@ export const updateTitle = async (req, res) => {
 		//Finding the document based on email, id, title and deleting it
 		if (email && chatId && chatTitle) {
 			await Chat.findOneAndUpdate({ email, chatId }, { chatTitle }, { new: true })
-				.then((result) => sendResponse(res, 200, false, `Chat Title changed successfully Successfully, new chat title is ${result.chatTitle}`))
+				.then((result) => sendResponse(res, 200, false, result))
 				.catch((error) => sendResponse(res, 500, true, error.message));
 		} else sendResponse(res, 404, true, "All parameters are not found to perform delete chat");
 	} catch (err) {
+		console.error(err);
+		sendResponse(res, 500, true, err.message);
+	}
+};
+
+export const getChatList = async (req, res) => {
+	try {
+		const { email } = req.body;
+
+		//Finding all Documents
+		if (email) {
+			await Chat.find({ email })
+				.then((result) => sendResponse(res, 200, false, result))
+				.catch((error) => sendResponse(res, 500, true, error.message));
+		} else {
+			sendResponse(res, 404, true, "Email id required to find all chat");
+		}
+	} catch (error) {
 		console.error(err);
 		sendResponse(res, 500, true, err.message);
 	}

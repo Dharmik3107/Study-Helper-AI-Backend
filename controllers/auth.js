@@ -46,10 +46,12 @@ export async function verify(req, res) {
 		//Conditional Operation based on user existance - verify otp or send error response to redirect at login
 		if (isUserExist.otp === otp) {
 			return res.status(200).json({
+				verified: true,
 				message: "User verified successfully",
 			});
 		} else {
 			return res.status(404).json({
+				verified: false,
 				message: "User not found",
 			});
 		}
