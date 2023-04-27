@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from "uuid";
+
 import Chat from "../models/chat.js";
 
 import { generateSubjectPrompt, generateTitlePrompt } from "../utils/PromptGenerator.js";
@@ -7,7 +9,7 @@ import sendResponse from "../utils/helperFunctions.js";
 
 export const newChat = async (req, res) => {
 	try {
-		const { email, message, chatId, subject } = req.body;
+		const { email, message, subject } = req.body;
 
 		if (email && message && chatId && subject) {
 			//Generating title in 5 words
@@ -19,7 +21,7 @@ export const newChat = async (req, res) => {
 			//Creating new document to store in database
 			const newChatDocument = new Chat({
 				email,
-				chatId,
+				chatId: uuidv4(),
 				chatTitle,
 				subject,
 				chatData: [{ timestamp: Date.now(), message, response: response.replace(/^[\?\n\+]+|[\?\n\+]+$/g, "").trim() }],
