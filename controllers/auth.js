@@ -16,7 +16,7 @@ export async function login(req, res) {
 
 		//Conditional Operations based on user existance - Update or create new
 		if (isUserExist) {
-			User.findOneAndUpdate({ email }, { otp });
+			await User.findOneAndUpdate({ email }, { otp });
 			sendEmail(email, otp);
 		} else {
 			const newUser = new User({
