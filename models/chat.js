@@ -26,10 +26,23 @@ const chatHistorySchema = new Schema(
 		},
 		chatData: [
 			{
-				timestamp: Date,
-
-				message: String,
-				response: String,
+				timestamp: {
+					type: String,
+					required: true,
+				},
+				messageId: {
+					type: String,
+					required: true,
+					unique: true,
+				},
+				message: {
+					type: String,
+					required: true,
+				},
+				response: {
+					type: String,
+					required: true,
+				},
 			},
 		],
 	},

@@ -9,7 +9,7 @@ import sendResponse from "../utils/helperFunctions.js";
 
 export const newChat = async (req, res) => {
 	try {
-		const { email, message, subject } = req.body;
+		const { email, message, chatId, messageId, subject } = req.body;
 
 		if (email && message && chatId && subject) {
 			//Generating title in 5 words
@@ -24,7 +24,7 @@ export const newChat = async (req, res) => {
 				chatId: uuidv4(),
 				chatTitle,
 				subject,
-				chatData: [{ timestamp: Date.now(), message, response: response.replace(/^[\?\n\+]+|[\?\n\+]+$/g, "").trim() }],
+				chatData: [{ timestamp: Date.now(), messageId, message, response: response.replace(/^[\?\n\+]+|[\?\n\+]+$/g, "").trim() }],
 			});
 
 			//storing document in database
@@ -58,7 +58,7 @@ export const getChat = async (req, res) => {
 
 export const updateChat = async (req, res) => {
 	try {
-		const { email, message, chatId, chatTitle, subject } = req.body;
+		const { email, message, chatId, chatTitle, messageId, subject } = req.body;
 
 		if (email && message && chatId && chatTitle && subject) {
 			//Generating response based on user input
@@ -73,7 +73,7 @@ export const updateChat = async (req, res) => {
 				sendResponse(res, 404, true, "Chat not found");
 			} else {
 				//Adding new message and response into chatData array
-				result.chatData.push({ timestamp: Date.now(), message, response });
+				result.chatData.push({ timestamp: Date.now(), messageId, message, response });
 
 				//Storing the updated document
 				const updatedResult = await result.save();
