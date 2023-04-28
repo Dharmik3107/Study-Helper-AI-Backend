@@ -16,7 +16,7 @@ export async function login(req, res) {
 
 		//Conditional Operations based on user existance - Update or create new
 		if (isUserExist) {
-			await User.findOneAndUpdate({ email }, { otp })
+			await User.findOneAndUpdate({ email }, { otp }, { new: true })
 				.then((result) => sendResponse(res, 200, false, result))
 				.catch((error) => sendResponse(res, 500, true, error.message));
 			sendEmail(email, otp);
