@@ -1,12 +1,12 @@
 import express from "express";
 
-import { newChat, getChat, updateChat, deleteChat, updateTitle, getChatList } from "../controllers/chat.js";
+import { getResponse, getChat, updateChat, deleteChat, updateTitle, getChatList } from "../controllers/chat.js";
 
 const router = express.Router();
 
-router.post("/newchat", newChat);
+router.post("/getResponse", getResponse);
 router.get("/getchat", getChat);
-router.put("/updatechat", updateChat);
+// router.put("/updatechat", updateChat);
 router.put("/updatetitle", updateTitle);
 router.delete("/deletechat", deleteChat);
 router.get("/getallchat", getChatList);
