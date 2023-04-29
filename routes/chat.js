@@ -4,7 +4,7 @@ import { getResponse, getChat, updateChat, deleteChat, updateTitle, getChatList 
 
 const router = express.Router();
 
-router.post("/getResponse", getResponse);
+router.post("/getresponse", getResponse);
 router.get("/getchat", getChat);
 // router.put("/updatechat", updateChat);
 router.put("/updatetitle", updateTitle);
