@@ -18,7 +18,6 @@ const chatHistorySchema = new Schema(
 		chatTitle: {
 			type: String,
 			required: true,
-			unique: true,
 		},
 		subject: {
 			type: String,

@@ -1,41 +1,39 @@
-import { v4 as uuidv4 } from "uuid";
-
 import Chat from "../models/chat.js";
 
 import { generateSubjectPrompt, generateTitlePrompt } from "../utils/PromptGenerator.js";
 import { generateTitle } from "../utils/titleGenerator.js";
 import { generateResponse } from "./../utils/responseGenerator.js";
 import sendResponse from "../utils/helperFunctions.js";
-import User from "../models/user.js";
 
 export const getResponse = async (req, res) => {
 	try {
 		const { email, message, chatId, messageId, subject } = req.body;
 
 		if (email && message && chatId && subject && messageId) {
-			//Generating title in 5 words
-			const titlePrompt = generateTitlePrompt(message);
-			const chatTitle = await generateTitle(titlePrompt);
-
 			//Generating response based on user input
 			const chatPrompt = generateSubjectPrompt(message, subject);
 			const response = await generateResponse(chatPrompt);
 
-			const user = await User.findOne({ email, chatId });
+			const user = await Chat.findOne({ chatId: chatId });
+			console.log("user----getResponse", user);
 
 			if (user) {
 				//Adding chat object to chat Data
-				isExist.chatData.push({ timestamp: Date.now(), messageId, message, response: response.replace(/^[\?\n\+]+|[\?\n\+]+$/g, "").trim() });
+				user.chatData.push({ timestamp: Date.now(), messageId, message, response: response.replace(/^[\?\n\+]+|[\?\n\+]+$/g, "").trim() });
 
 				//Storing the updated document
 				const updatedResult = await user.save();
 
 				sendResponse(res, 200, false, updatedResult);
 			} else {
+				//Generating title in 5 words
+				const titlePrompt = generateTitlePrompt(message);
+				const chatTitle = await generateTitle(titlePrompt);
+
 				//Creating new document to store in database
 				const newChatDocument = new Chat({
 					email,
-					chatId: uuidv4(),
+					chatId,
 					chatTitle,
 					subject,
 					chatData: [{ timestamp: Date.now(), messageId, message, response: response.replace(/^[\?\n\+]+|[\?\n\+]+$/g, "").trim() }],
@@ -73,16 +71,16 @@ export const getChat = async (req, res) => {
 
 // export const updateChat = async (req, res) => {
 // 	try {
-// 		const { email, message, chatId, chatTitle, messageId, subject } = req.body;
+// 		const { email, message, chatId, messageId, subject } = req.body;
 
-// 		if (email && message && chatId && chatTitle && subject) {
+// 		if (email && message && chatId && subject) {
 // 			//Generating response based on user input
 // 			const chatPrompt = generateSubjectPrompt(message, subject);
 // 			const response = await generateResponse(chatPrompt);
 
 // 			//Finding the document based on email, id, title
-// 			const result = await Chat.findOne({ email, chatId, chatTitle });
-
+// 			const result = await Chat.findOne({ email, chatId });
+// 			console.log(result);
 // 			//conditional response
 // 			if (!result) {
 // 				sendResponse(res, 404, true, "Chat not found");
