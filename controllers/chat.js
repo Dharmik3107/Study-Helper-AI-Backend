@@ -52,7 +52,7 @@ export const getResponse = async (req, res) => {
 
 export const getChat = async (req, res) => {
 	try {
-		const { email, chatId } = req.body;
+		const { email, chatId } = req.query;
 
 		//Finding the document based on email, id, title
 		const result = await Chat.findOne({ email, chatId });
@@ -133,7 +133,7 @@ export const updateTitle = async (req, res) => {
 
 export const getChatList = async (req, res) => {
 	try {
-		const { email } = req.body;
+		const { email } = req.query;
 
 		//Finding all Documents
 		if (email) {
