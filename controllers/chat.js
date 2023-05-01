@@ -76,7 +76,7 @@ export const getChat = async (req, res) => {
 
 export const deleteChat = async (req, res) => {
 	try {
-		const { email, chatId } = req.body;
+		const { email, chatId } = req.query;
 
 		//Finding the document based on email, id, title and deleting it
 		if (email && chatId) {
