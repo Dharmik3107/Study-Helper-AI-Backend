@@ -15,16 +15,19 @@ export const getResponse = async (req, res) => {
 			const response = await generateResponse(chatPrompt);
 
 			const user = await Chat.findOne({ chatId: chatId });
-			console.log("user----getResponse", user);
 
 			if (user) {
-				//Adding chat object to chat Data
-				user.chatData.push({ timestamp: Date.now(), messageId, message, response: response.replace(/^[\?\n\+]+|[\?\n\+]+$/g, "").trim() });
+				const isMessageIdExist = Chat.findOne({ chatData: { messageId: messageId } });
 
-				//Storing the updated document
-				const updatedResult = await user.save();
+				if (!isMessageIdExist) {
+					//Adding chat object to chat Data
+					user.chatData.push({ timestamp: Date.now(), messageId, message, response: response.replace(/^[\?\n\+]+|[\?\n\+]+$/g, "").trim() });
 
-				sendResponse(res, 200, false, updatedResult);
+					//Storing the updated document
+					const updatedResult = await user.save();
+
+					sendResponse(res, 200, false, updatedResult);
+				} else sendResponse(res, 406, true, "Message already exist");
 			} else {
 				//Generating title in 5 words
 				const titlePrompt = generateTitlePrompt(message);
@@ -43,7 +46,7 @@ export const getResponse = async (req, res) => {
 				const result = await newChatDocument.save();
 				sendResponse(res, 200, false, result);
 			}
-		} else sendResponse(res, 404, true, "All parameters are not found to perform add new chat");
+		} else sendResponse(res, 400, true, "All parameters are not found to perform add new chat");
 	} catch (error) {
 		console.error(error);
 		sendResponse(res, 500, true, error.message);
@@ -54,50 +57,22 @@ export const getChat = async (req, res) => {
 	try {
 		const { email, chatId } = req.query;
 
-		//Finding the document based on email, id, title
-		const result = await Chat.findOne({ email, chatId });
+		if (email && chatId) {
+			//Finding the document based on email, id, title
+			const result = await Chat.findOne({ email, chatId });
 
-		//conditional response
-		if (!result) {
-			sendResponse(res, 404, true, "Chat not found");
-		} else {
-			sendResponse(res, 200, false, result);
-		}
+			//conditional response
+			if (!result) {
+				sendResponse(res, 404, true, "Chat not found");
+			} else {
+				sendResponse(res, 200, false, result);
+			}
+		} else sendResponse(res, 400, true, "All parameters are not found");
 	} catch (error) {
 		console.error(error);
 		sendResponse(res, 500, true, error.message);
 	}
 };
-
-// export const updateChat = async (req, res) => {
-// 	try {
-// 		const { email, message, chatId, messageId, subject } = req.body;
-
-// 		if (email && message && chatId && subject) {
-// 			//Generating response based on user input
-// 			const chatPrompt = generateSubjectPrompt(message, subject);
-// 			const response = await generateResponse(chatPrompt);
-
-// 			//Finding the document based on email, id, title
-// 			const result = await Chat.findOne({ email, chatId });
-// 			console.log(result);
-// 			//conditional response
-// 			if (!result) {
-// 				sendResponse(res, 404, true, "Chat not found");
-// 			} else {
-// 				//Adding new message and response into chatData array
-// 				result.chatData.push({ timestamp: Date.now(), messageId, message, response });
-
-// 				//Storing the updated document
-// 				const updatedResult = await result.save();
-// 				sendResponse(res, 200, false, updatedResult);
-// 			}
-// 		} else sendResponse(res, 404, true, "All parameters are not found to perform update chat");
-// 	} catch (err) {
-// 		console.error(err);
-// 		sendResponse(res, 500, true, err.message);
-// 	}
-// };
 
 export const deleteChat = async (req, res) => {
 	try {
@@ -108,7 +83,7 @@ export const deleteChat = async (req, res) => {
 			await Chat.findOneAndDelete({ email, chatId })
 				.then((result) => sendResponse(res, 200, false, "Chat deleted Successfully"))
 				.catch((error) => sendResponse(res, 500, true, error.message));
-		} else sendResponse(res, 404, true, "All parameters are not found to perform delete chat");
+		} else sendResponse(res, 400, true, "All parameters are not found to perform delete chat");
 	} catch (err) {
 		console.error(err);
 		sendResponse(res, 500, true, err.message);
@@ -124,7 +99,7 @@ export const updateTitle = async (req, res) => {
 			await Chat.findOneAndUpdate({ email, chatId }, { chatTitle }, { new: true })
 				.then((result) => sendResponse(res, 200, false, result))
 				.catch((error) => sendResponse(res, 500, true, error.message));
-		} else sendResponse(res, 404, true, "All parameters are not found to perform delete chat");
+		} else sendResponse(res, 400, true, "All parameters are not found to perform delete chat");
 	} catch (err) {
 		console.error(err);
 		sendResponse(res, 500, true, err.message);
@@ -141,7 +116,7 @@ export const getChatList = async (req, res) => {
 				.then((result) => sendResponse(res, 200, false, result))
 				.catch((error) => sendResponse(res, 500, true, error.message));
 		} else {
-			sendResponse(res, 404, true, "Email id required to find all chat");
+			sendResponse(res, 400, true, "Email id required to find all chat");
 		}
 	} catch (error) {
 		console.error(err);
