@@ -17,7 +17,7 @@ export const getResponse = async (req, res) => {
 			const user = await Chat.findOne({ chatId: chatId });
 
 			if (user) {
-				const isMessageIdExist = Chat.findOne({ chatData: { messageId: messageId } });
+				const isMessageIdExist = await Chat.findOne({ chatData: { messageId: messageId } });
 
 				if (!isMessageIdExist) {
 					//Adding chat object to chat Data
